@@ -20,7 +20,6 @@ License: GPL-3.0-or-later
 Files: resources/icons/*ghostwriter.png
        resources/icons/sc-apps-ghostwriter.svg
        resources/windows/ghostwriter.ico
-       resources/mac/ghostwriter.icns
 Copyright: Megan Conkle <megan.conkle@kdemail.net>
 License: CC-BY-SA-4.0
 
