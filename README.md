@@ -42,11 +42,11 @@ Finally, you may follow the build instructions below to install on Linux with th
 
 ### MacOS
 
-An installer is planned in the future and will be hosted at the [KDE binary factory](https://binary-factory.kde.org/), along with a nightly build.  If you have any expertise to offer, please consider helping with a [Craft configuration](https://community.kde.org/Craft).
+macOS disk images (`.dmg`) are built with [Craft](https://community.kde.org/Craft) by KDE's continuous integration.
 
 ## Build
 
-If you wish to build from the source code, you will need Qt 6, available from <http://www.qt.io/> if you are on Windows, or in your Linux distribution's repository. If you are on MacOS you will need the latest Qt 6 from brew.
+If you wish to build from the source code, you will need Qt 6, available from <http://www.qt.io/> if you are on Windows, or in your Linux distribution's repository. If you are on MacOS, use Craft as described below to get Qt 6 and the KDE Frameworks.
 
 This documentation assumes you already have the source code unzipped in a folder.
 
@@ -85,7 +85,10 @@ Next, open a terminal window, and enter the following commands:
 
 ### MacOS
 
-Please consult the [KDE development guide](https://community.kde.org/Get_Involved/development/Mac) on how to build KDE applications for MacOS in general.
+Please consult the [KDE development guide](https://community.kde.org/Get_Involved/development/Mac) on how to build KDE applications for MacOS in general.  Once Craft is set up, build *ghostwriter* and its dependencies from your source folder, then create a `.dmg` disk image:
+
+    $ craft --options ghostwriter.srcDir=$PWD ghostwriter
+    $ craft --package --options ghostwriter.srcDir=$PWD ghostwriter
 
 ### FreeBSD
 
