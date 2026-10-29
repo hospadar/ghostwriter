@@ -135,3 +135,27 @@ set_target_properties(ghostwriter PROPERTIES
     MACOSX_BUNDLE ON
 )
 
+# Add icon files to the application's source files to have CMake bundle them in
+# the executable. This must stay in the target's directory: on macOS the .icns
+# is placed in the bundle via a source file property, which is directory scoped.
+ecm_add_app_icon(ICONS_SOURCES ICONS ${ICON_FILES})
+target_sources(ghostwriter PRIVATE ${ICONS_SOURCES})
+
+# See https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
+if(APPLE)
+    string(TIMESTAMP CURRENT_YEAR "%Y")
+
+    # These are substituted by CMake into MacOSBundleInfo.plist.in.
+    set_target_properties(ghostwriter PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/resources/mac/MacOSBundleInfo.plist.in
+        MACOSX_BUNDLE_GUI_IDENTIFIER "org.kde.ghostwriter"
+        MACOSX_BUNDLE_BUNDLE_NAME "ghostwriter"
+        MACOSX_BUNDLE_ICON_FILE "${MACOSX_BUNDLE_ICON_FILE}"
+        MACOSX_BUNDLE_INFO_STRING "ghostwriter - A Markdown Editor"
+        MACOSX_BUNDLE_LONG_VERSION_STRING "ghostwriter ${RELEASE_SERVICE_VERSION}"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${RELEASE_SERVICE_VERSION}"
+        MACOSX_BUNDLE_COPYRIGHT "2014-${CURRENT_YEAR} the ghostwriter authors"
+    )
+endif()
+

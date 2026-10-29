@@ -74,15 +74,14 @@ set_package_properties(KF${KF_MAJOR_VERSION}DocTools PROPERTIES DESCRIPTION
 )
 
 set(CMARK_TESTS OFF)
+# KDECMakeSettings turns on CMAKE_MACOSX_BUNDLE, which would make cmark-gfm's
+# command line tool a bundle that its install() rule has no destination for.
+set(SAVED_CMAKE_MACOSX_BUNDLE ${CMAKE_MACOSX_BUNDLE})
+set(CMAKE_MACOSX_BUNDLE OFF)
 add_subdirectory(3rdparty/cmark-gfm EXCLUDE_FROM_ALL)
-add_subdirectory(src)
+set(CMAKE_MACOSX_BUNDLE ${SAVED_CMAKE_MACOSX_BUNDLE})
 
-if(KF${QT_MAJOR_VERSION}DocTools_FOUND)
-    kdoctools_install(po)
-    add_subdirectory(doc)
-endif()
-
-# Add icon files to the application's source files to have CMake bundle them in the executable.
+# Application icons; src/ bundles them into the executable.
 set(ICONS_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons)
 
 set(ICON_FILES
@@ -95,33 +94,15 @@ set(ICON_FILES
     ${ICONS_FOLDER}/256-apps-ghostwriter.png
 )
 
-ecm_add_app_icon(ICONS_SOURCES ICONS ${ICON_FILES})
-target_sources(ghostwriter PRIVATE ${ICONS_SOURCES})
+add_subdirectory(src)
+
+if(KF${QT_MAJOR_VERSION}DocTools_FOUND)
+    kdoctools_install(po)
+    add_subdirectory(doc)
+endif()
 
 if(BUILD_TESTING)
    add_subdirectory(autotest)
-endif()
-
-
-# See https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
-if(APPLE)
-    string(TIMESTAMP CURRENT_YEAR "%Y")
-
-    set_property(
-        TARGET ghostwriter
-        PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/MacOSBundleInfo.plist.in
-    )
-
-    # These are substituted by CMake into MacOSBundleInfo.plist.in.
-    set(MACOSX_BUNDLE_DISPLAY_NAME "ghostwriter")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.kde.ghostwriter")
-    set(MACOSX_BUNDLE_BUNDLE_NAME "ghostwriter")
-    set(MACOSX_BUNDLE_DISPLAY_NAME "ghostwriter")
-    set(MACOSX_BUNDLE_INFO_STRING "ghostwriter - A Markdown Editor")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "ghostwriter ${RELEASE_SERVICE_VERSION}")
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${RELEASE_SERVICE_VERSION}")
-    set(MACOSX_BUNDLE_COPYRIGHT "2014-${CURRENT_YEAR} the ghostwriter authors")
 endif()
 
 install(TARGETS ghostwriter ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
